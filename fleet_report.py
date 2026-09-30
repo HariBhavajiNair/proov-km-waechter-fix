@@ -1,6 +1,5 @@
 # fleet_report.py
 # Prints the nightly fleet-health summary for Vossberg Mobility.
-# Written in 2014. Runs every morning. Never cleaned up.
 
 from km_wachter import wear_percent, needs_service, SERVICE_INTERVAL_KM
 from config_loader import load_settings, get_setting
@@ -15,14 +14,18 @@ def car_wear(car: dict) -> float:
 
 
 def fleet_summary(fleet: list) -> dict:
-    """Return count, number due for service, and average wear across the fleet."""
+    """Return count, number due for service, and average wear across the fleet.
+
+    An empty fleet returns average_wear of 0.0 rather than raising ZeroDivisionError.
+    A car without 'last_service_km' is treated as freshly serviced (0 % wear).
+    """
     total = 0.0
     due = 0
     for car in fleet:
         total += car_wear(car)
         if needs_service(car):
             due += 1
-    average = total / len(fleet)
+    average = total / len(fleet) if fleet else 0.0
     return {"count": len(fleet), "due": due, "average_wear": average}
 
 
