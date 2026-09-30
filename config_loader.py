@@ -1,5 +1,5 @@
 # config_loader.py
-# Reads settings.cfg. Hand-rolled, because ConfigParser felt "too complicated" in 2013.
+# Reads settings.cfg for Vossberg Mobility's KM-Waechter service.
 
 SETTINGS_FILE = "settings.cfg"
 
@@ -14,7 +14,11 @@ KNOWN_KEYS = [
 
 
 def load_settings(path: str | None = None) -> dict:
-    """Read *path* (defaults to settings.cfg) and return a dict of recognised keys."""
+    """Read *path* (defaults to settings.cfg) and return a dict of recognised keys.
+
+    Unknown keys are silently dropped so that unrecognised config entries do not
+    surface as errors; callers are responsible for providing sensible fallbacks.
+    """
     if path is None:
         path = SETTINGS_FILE
     settings: dict = {}
@@ -26,20 +30,17 @@ def load_settings(path: str | None = None) -> dict:
             key, _, value = line.partition("=")
             key = key.strip()
             value = value.strip()
-            # Unknown keys are silently dropped, so a typo in the cfg never surfaces.
             if key in KNOWN_KEYS:
-                settings[key] = value       # everything stays a string; callers cast as needed
+                settings[key] = value   # everything stays a string; callers cast as needed
     return settings
 
 
 def get_int(settings: dict, key: str, fallback: int) -> int:
     """Return *settings[key]* as int, or *fallback* if missing or not a valid integer."""
-    if key in settings:
-        try:
-            return int(settings[key])
-        except ValueError:
-            return fallback
-    return fallback
+    try:
+        return int(settings[key])
+    except (KeyError, ValueError):
+        return fallback
 
 
 def get_setting(settings: dict, key: str, fallback: str = "") -> str:
