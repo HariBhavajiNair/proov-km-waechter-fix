@@ -1,5 +1,11 @@
 # test_km_wachter.py
-from km_wachter import needs_service
+from km_wachter import needs_service, wear_percent
+
+
+def test_wear_percent_uses_true_division():
+    # 14 900 km of a 15 000 km window is 99.33…% — true division, never floored to 0.
+    result = wear_percent(14900, 15000)
+    assert abs(result - 99.3333) < 0.01, f"expected ~99.33, got {result}"
 
 
 def test_almost_due_car_is_flagged():

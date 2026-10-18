@@ -18,11 +18,16 @@ def load_settings(path: str | None = None) -> dict:
 
     Unknown keys are silently dropped so that unrecognised config entries do not
     surface as errors; callers are responsible for providing sensible fallbacks.
+    Returns an empty dict if the file does not exist.
     """
     if path is None:
         path = SETTINGS_FILE
     settings: dict = {}
-    with open(path) as f:
+    try:
+        f = open(path)
+    except FileNotFoundError:
+        return settings
+    with f:
         for line in f:
             line = line.strip()
             if not line or line.startswith("#") or "=" not in line:

@@ -3,11 +3,15 @@
 
 import time
 
-LOG_LINES: list[str] = []   # global buffer; cleared by flush_log() after each write
+LOG_LINES: list[str] = []   # module-level buffer; always call flush_log() to drain it
 
 
 def log(message: str) -> None:
-    """Append a timestamped line to the in-memory buffer and print it."""
+    """Append a timestamped line to the in-memory buffer and print it.
+
+    Lines accumulate until flush_log() is called; always pair log() calls with
+    a matching flush_log() to avoid double-writing on the next run.
+    """
     stamp = time.strftime("%Y-%m-%d %H:%M:%S")
     line = f"[{stamp}] {message}"
     LOG_LINES.append(line)

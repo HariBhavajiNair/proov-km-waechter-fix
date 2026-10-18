@@ -13,8 +13,3 @@ def km_to_miles(km: float) -> float:
 def format_number(value: float) -> str:
     """Format a float to one decimal place."""
     return f"{value:.1f}"
-
-
-def format_percent(value: float) -> str:
-    """Format a float as a whole-number percentage string."""
-    return f"{int(value)}%"

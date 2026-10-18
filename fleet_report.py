@@ -13,7 +13,7 @@ def car_wear(car: dict) -> float:
     return wear_percent(car["odometer"] - last, SERVICE_INTERVAL_KM)
 
 
-def fleet_summary(fleet: list) -> dict:
+def fleet_summary(fleet: list[dict]) -> dict:
     """Return count, number due for service, and average wear across the fleet.
 
     An empty fleet returns average_wear of 0.0 rather than raising ZeroDivisionError.
@@ -29,7 +29,7 @@ def fleet_summary(fleet: list) -> dict:
     return {"count": len(fleet), "due": due, "average_wear": average}
 
 
-def print_report(fleet: list) -> None:
+def print_report(fleet: list[dict]) -> None:
     """Print the nightly fleet-health summary and append it to the log file."""
     settings = load_settings()
     log(get_setting(settings, "report_title", "Nightly fleet report"))

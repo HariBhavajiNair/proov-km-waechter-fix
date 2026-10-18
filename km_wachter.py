@@ -8,6 +8,7 @@ WARN_AT_PERCENT = 80
 def wear_percent(km_since_service: float, interval: float) -> float:
     """Return wear as a percentage of one service interval.
 
+    Uses true division so a nearly-worn car is never floored to 0.
     Example: wear_percent(14900, 15000) → 99.33
     """
     return (km_since_service / interval) * 100
@@ -23,8 +24,8 @@ def needs_service(car: dict) -> bool:
     return wear_percent(km_since, SERVICE_INTERVAL_KM) >= WARN_AT_PERCENT
 
 
-def check_fleet(fleet: list) -> list:
-    """Flag every car that needs service and return their ids."""
+def check_fleet(fleet: list[dict]) -> list[str]:
+    """Flag every car that needs service, print a SERVICE DUE notice, and return their ids."""
     flagged = []
     for car in fleet:
         if needs_service(car):
